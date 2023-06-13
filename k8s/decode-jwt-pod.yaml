@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: decode-jwt
+spec:
+  containers:
+  - image: salmeidabatista/decode-jwt:0.4
+    name: decode-jwt
+    ports:
+      - containerPort: 8080
+        name: http
+        protocol: TCP
+    env:
+    - name: PORT
+      value: "8080"
+    livenessProbe:
+      httpGet:
+        path: /liveness-probe
+        port: 8080
+      initialDelaySeconds: 5
+      timeoutSeconds: 1
+      periodSeconds: 4
+      failureThreshold: 3
