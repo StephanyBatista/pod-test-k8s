@@ -21,6 +21,14 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	readinessProbeStatus := 200
+	if os.Getenv("READINESS_PROBE_STATUS") != "" {
+		readinessProbeStatus, _ = strconv.Atoi(os.Getenv("READINESS_PROBE_STATUS"))
+	}
+	r.Get("/readiness-probe", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(readinessProbeStatus)
+	})
+
 	livenessProbeStatus := 200
 	livenessProbeDuration := 0
 	r.Get("/liveness-probe", func(w http.ResponseWriter, r *http.Request) {

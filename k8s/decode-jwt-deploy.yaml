@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: decode-jwt-deploy
+spec:
+  replicas: 10
+  selector: 
+    matchLabels:
+      app: decode-jwt
+  template:
+    metadata:
+      labels:
+        app: decode-jwt
+    spec:
+      containers:
+      - image: salmeidabatista/decode-jwt:0.5
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+        name: decode-jwt
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "8080"
+        livenessProbe:
+          httpGet:
+            path: /liveness-probe
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 4
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readiness-probe
+            port: 8080
+          successThreshold: 2

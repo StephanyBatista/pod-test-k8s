@@ -4,15 +4,17 @@ metadata:
   name: decode-jwt
 spec:
   containers:
-  - image: salmeidabatista/decode-jwt:0.4
+  - image: salmeidabatista/decode-jwt:0.5
     name: decode-jwt
     ports:
-      - containerPort: 8080
-        name: http
-        protocol: TCP
+    - containerPort: 8080
+      name: http
+      protocol: TCP
     env:
     - name: PORT
       value: "8080"
+    - name: READINESS_PROBE_STATUS
+      value: "404"
     livenessProbe:
       httpGet:
         path: /liveness-probe
@@ -21,3 +23,8 @@ spec:
       timeoutSeconds: 1
       periodSeconds: 4
       failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /readiness-probe
+        port: 8080
+      successThreshold: 2
